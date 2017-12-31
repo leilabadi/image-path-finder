@@ -1,0 +1,1 @@
+This is a fun project which can input an arbitrary image as a map and uses image processing to recognise objects in the map, then does an AI path finder algorithm to find a route in the map.
