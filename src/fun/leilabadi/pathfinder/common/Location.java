@@ -1,38 +1,33 @@
 package fun.leilabadi.pathfinder.common;
 
-/**
- * @author mosi
- * @version 1.0
- * @since 0.2
- */
 public class Location implements Cloneable<Location> {
-    public int row;
-    public int column;
+    public int y;
+    public int x;
 
-    public Location(int row, int column) {
-        this.row = row;
-        this.column = column;
+    public Location(int y, int x) {
+        this.y = y;
+        this.x = x;
     }
 
-    public Integer getRow() {
-        return row;
+    public Integer getY() {
+        return y;
     }
 
-    public Integer getColumn() {
-        return column;
+    public Integer getX() {
+        return x;
     }
 
     public int distanceFrom(Location target) {
-        return Math.abs(row - target.row) + Math.abs(column - target.column);
+        return Math.abs(y - target.y) + Math.abs(x - target.x);
     }
 
     @Override
     public Location clone() {
-        return new Location(row, column);
+        return new Location(y, x);
     }
 
     @Override
     public String toString() {
-        return "(" + row + "," + column + ')';
+        return "(" + y + "," + x + ')';
     }
 }

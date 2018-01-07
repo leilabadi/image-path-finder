@@ -1,35 +1,30 @@
 package fun.leilabadi.pathfinder;
 
-/**
- * @author mosi
- * @version 1.0
- * @since 0.2
- */
-public enum PacmanCell {
-    EMPTY((byte) 1, '-'), WALL((byte) 2, '%'), PACMAN((byte) 3, 'P'), FOOD((byte) 4, '.');
+public enum CellType {
+    EMPTY((byte) 1, '-'), OBSTACLE((byte) 2, '%'), START((byte) 3, 'P'), GOAL((byte) 4, '.');
 
     private byte value;
     private char symbol;
 
-    PacmanCell(byte value, char symbol) {
+    CellType(byte value, char symbol) {
         this.value = value;
         this.symbol = symbol;
     }
 
-    public static PacmanCell fromSymbol(char symbol) {
-        PacmanCell result;
+    public static CellType fromSymbol(char symbol) {
+        CellType result;
         switch (symbol) {
             case '-':
                 result = EMPTY;
                 break;
             case '%':
-                result = WALL;
+                result = OBSTACLE;
                 break;
             case 'P':
-                result = PACMAN;
+                result = START;
                 break;
             case '.':
-                result = FOOD;
+                result = GOAL;
                 break;
             default:
                 throw new IllegalArgumentException();

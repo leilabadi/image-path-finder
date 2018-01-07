@@ -19,10 +19,18 @@ public class MapProcessor {
 
     public MapProcessor(String imagePath) {
         this.imagePath = imagePath;
-        doProcessing();
     }
 
-    private void doProcessing() {
+    public MarvinImage getProcessedMap() {
+        return processedMap;
+    }
+
+    public MarvinSegment[] getMapSegments() {
+        return mapSegments;
+    }
+
+
+    public void processMap() {
         MarvinImage imageOriginal = MarvinImageIO.loadImage(imagePath);
 
         final List<MarvinImage> imageResults = new ArrayList<>();
@@ -188,13 +196,5 @@ public class MapProcessor {
 
     private int max(int a, int b, int c) {
         return Math.max(Math.max(a, b), c);
-    }
-
-    public MarvinImage getProcessedMap() {
-        return processedMap;
-    }
-
-    public MarvinSegment[] getMapSegments() {
-        return mapSegments;
     }
 }

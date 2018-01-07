@@ -1,33 +1,28 @@
-package fun.leilabadi.pathfinder.graphic;
+package fun.leilabadi.pathfinder.ui.components;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-/**
- * @author mosi
- * @version 1.0
- * @since 0.2
- */
-public class GraphicCell {
-    private int rowIndex;
-    private int columnIndex;
+public class InteractiveGridCell {
+    private int x;
+    private int y;
     private Point2D.Double location;
     private boolean selected;
     private Paint originalPaint;
     private Paint selectedPaint;
     private Paint overridePaint;
 
-    public GraphicCell(int rowIndex, int columnIndex) {
-        this.rowIndex = rowIndex;
-        this.columnIndex = columnIndex;
+    public InteractiveGridCell(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public int getRowIndex() {
-        return rowIndex;
+    public int getX() {
+        return x;
     }
 
-    public int getColumnIndex() {
-        return columnIndex;
+    public int getY() {
+        return y;
     }
 
     public Point2D.Double getLocation() {
@@ -76,6 +71,6 @@ public class GraphicCell {
 
     @Override
     public String toString() {
-        return "(" + rowIndex + "," + columnIndex + ")";
+        return "(" + x + "," + y + ")";
     }
 }

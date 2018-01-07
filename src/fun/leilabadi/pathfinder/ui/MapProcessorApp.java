@@ -1,4 +1,4 @@
-package fun.leilabadi.pathfinder;
+package fun.leilabadi.pathfinder.ui;
 
 import fun.leilabadi.pathfinder.imageprocessing.MapProcessor;
 import marvin.image.MarvinImage;
@@ -9,24 +9,25 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-public class App {
-    private final static String imageName = "raw-map.jpg";
+public class MapProcessorApp {
+    private final static String mapFileName = "raw-map.jpg";
+    private final static String processedMapFileName = "processed-map.png";
     private static String imagePath;
     private static String directoryPath;
 
     public static void main(String[] args) {
-
         initFiles();
 
         MapProcessor mapProcessor = new MapProcessor(imagePath);
+        mapProcessor.processMap();
         final MarvinImage map = mapProcessor.getProcessedMap();
 
-        MarvinImageIO.saveImage(map, directoryPath + "processed-map.png");
+        MarvinImageIO.saveImage(map, directoryPath + processedMapFileName);
     }
 
     private static void initFiles() {
-        final ClassLoader classLoader = App.class.getClassLoader();
-        final URL url = classLoader.getResource(imageName);
+        final ClassLoader classLoader = MapProcessorApp.class.getClassLoader();
+        final URL url = classLoader.getResource(mapFileName);
         URI uri = null;
         try {
             if (url != null) uri = url.toURI();

@@ -1,29 +1,24 @@
 package fun.leilabadi.pathfinder.common;
 
-/**
- * @author mosi
- * @version 1.0
- * @since 0.2
- */
 public class Size {
-    private int rows;
-    private int columns;
+    private int rowCount;
+    private int columnCount;
 
-    public Size(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
+    public Size(int rowCount, int columnCount) {
+        this.rowCount = rowCount;
+        this.columnCount = columnCount;
     }
 
-    public Integer getRows() {
-        return rows;
+    public Integer getRowCount() {
+        return rowCount;
     }
 
-    public Integer getColumns() {
-        return columns;
+    public Integer getColumnCount() {
+        return columnCount;
     }
 
     @Override
     public String toString() {
-        return rows + "X" + columns;
+        return rowCount + "X" + columnCount;
     }
 }
