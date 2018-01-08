@@ -3,7 +3,6 @@ package fun.leilabadi.pathfinder.ui;
 import fun.leilabadi.pathfinder.PathFinder;
 import fun.leilabadi.pathfinder.State;
 import fun.leilabadi.pathfinder.common.Size;
-import fun.leilabadi.pathfinder.PathFinderBuilder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,11 +15,9 @@ public class PathFinderFrame extends JFrame {
     private PathFinderGrid grid;
     private Thread thread;
 
-    public PathFinderFrame(String[] lines) {
+    public PathFinderFrame(PathFinder pathFinder) {
         super("Path Finder");
 
-        PathFinderBuilder builder = new PathFinderBuilder(lines);
-        PathFinder pathFinder = builder.build();
         grid = new PathFinderGrid(pathFinder.getMap());
         Size size = pathFinder.getMap().getSize();
 

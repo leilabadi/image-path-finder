@@ -1,32 +1,26 @@
 package fun.leilabadi.pathfinder.ui;
 
-import fun.leilabadi.pathfinder.imageprocessing.MapProcessor;
-import marvin.image.MarvinImage;
-import marvin.io.MarvinImageIO;
+import fun.leilabadi.pathfinder.PathFinder;
+import fun.leilabadi.pathfinder.PathFinderBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-public class MapProcessorApp {
+public class ImagePathFinderApp {
     private final static String mapFileName = "raw-map.jpg";
     private final static String processedMapFileName = "processed-map.png";
     private static String imagePath;
     private static String directoryPath;
 
     public static void main(String[] args) {
+
         initFiles();
 
-        MapProcessor mapProcessor = new MapProcessor(imagePath);
-        mapProcessor.processMap();
-        final MarvinImage map = mapProcessor.getProcessedMap();
-
-        MarvinImageIO.saveImage(map, directoryPath + processedMapFileName);
-
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getRed().getImage(), directoryPath + "red.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getGreen().getImage(), directoryPath + "green.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getBlue().getImage(), directoryPath + "blue.png");
+        PathFinderBuilder builder = new PathFinderBuilder();
+        PathFinder pathFinder = builder.build(imagePath, directoryPath);
+        new PathFinderFrame(pathFinder);
     }
 
     private static void initFiles() {
