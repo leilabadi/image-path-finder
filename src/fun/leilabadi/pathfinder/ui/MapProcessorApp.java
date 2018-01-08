@@ -24,16 +24,6 @@ public class MapProcessorApp {
 
         MarvinImageIO.saveImage(map, directoryPath + processedMapFileName);
 
-        /*MarvinImageIO.saveImage(mapProcessor.getFilters().getRed().getImage(), directoryPath + "red.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getGreen().getImage(), directoryPath + "green.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getBlue().getImage(), directoryPath + "blue.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getJustRed().getImage(), directoryPath + "just-red.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getJustGreen().getImage(), directoryPath + "just-green.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getJustBlue().getImage(), directoryPath + "just-blue.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getAlmostRed().getImage(), directoryPath + "almost-red.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getAlmostGreen().getImage(), directoryPath + "almost-green.png");
-        MarvinImageIO.saveImage(mapProcessor.getFilters().getAlmostBlue().getImage(), directoryPath + "almost-blue.png");*/
-
         /*for (int i = 1; i < 7; i++) {
             MarvinImageIO.saveImage(mapProcessor.getProcessedImages().get(i), directoryPath + "image-" + i + ".png");
         }*/

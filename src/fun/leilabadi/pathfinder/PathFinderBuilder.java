@@ -2,10 +2,14 @@ package fun.leilabadi.pathfinder;
 
 import fun.leilabadi.pathfinder.common.Location;
 import fun.leilabadi.pathfinder.common.Size;
-import fun.leilabadi.pathfinder.imageprocessing.Constants;
 import fun.leilabadi.pathfinder.imageprocessing.MapProcessor;
 import marvin.color.MarvinColorModelConverter;
 import marvin.image.MarvinImage;
+import marvin.image.MarvinSegment;
+
+import java.util.ArrayList;
+
+import static marvin.MarvinPluginCollection.floodfillSegmentation;
 
 public class PathFinderBuilder {
 
@@ -54,19 +58,40 @@ public class PathFinderBuilder {
 
         Size size = new Size(map.getHeight(), map.getWidth());
 
-        MarvinImage binary = MarvinColorModelConverter.rgbToBinary(map, Constants.BYTE_MID);
-
         Cell[][] cells = new Cell[size.getRowCount()][size.getColumnCount()];
         for (int y = 0; y < size.getRowCount(); y++) {
             for (int x = 0; x < size.getColumnCount(); x++) {
-                cells[y][x] = new Cell(binary.getBinaryColor(x, y) ? CellType.OBSTACLE : CellType.EMPTY);
+                cells[y][x] = new Cell(map.getBinaryColor(x, y) ? CellType.OBSTACLE : CellType.EMPTY);
             }
         }
 
-        //TODO: find start and goal and decrease resolution when converting to ui grid
+        MarvinImage filteredImage;
+        MarvinSegment[] segments;
+        filteredImage = mapProcessor.getFilters().getAlmostBlue().getImage();
+        filteredImage = MarvinColorModelConverter.binaryToRgb(filteredImage);
+        segments = floodfillSegmentation(filteredImage);
+        MarvinSegment startSegment = getTargetSegment(map, segments);
 
-        Location startLocation = new Location(1, 1);
-        Location goalLocation = new Location(2, 2);
+        filteredImage = mapProcessor.getFilters().getAlmostRed().getImage();
+        filteredImage = MarvinColorModelConverter.binaryToRgb(filteredImage);
+        segments = floodfillSegmentation(filteredImage);
+        MarvinSegment goalSegment = getTargetSegment(map, segments);
+
+        Location startLocation = new Location(startSegment.y1, startSegment.x1);
+        Location goalLocation = new Location(goalSegment.y1, goalSegment.x1);
+        //TODO: decrease resolution when converting to ui grid
         return new HeuristicPathFinder(size, startLocation, goalLocation, cells);
+    }
+
+    private MarvinSegment getTargetSegment(MarvinImage map, MarvinSegment[] segments) {
+        java.util.List<MarvinSegment> list = new ArrayList<>();
+        for (MarvinSegment seg : segments) {
+            if (seg.width == map.getWidth() && seg.height == map.getHeight())
+                continue;
+            else
+                list.add(seg);
+        }
+        if (list.size() != 1) throw new RuntimeException("Error identifying start/goal point.");
+        return list.get(0);
     }
 }
