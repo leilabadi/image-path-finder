@@ -10,52 +10,35 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static marvin.MarvinPluginCollection.floodfillSegmentation;
 import static marvin.MarvinPluginCollection.invertColors;
 
 public class MapProcessor {
     private final String imagePath;
-    private MarvinImage processedMap;
-    private MarvinSegment[] mapSegments;
     private final FilterFunction redFilter = new RedFilter();
     private final FilterFunction greenFilter = new GreenFilter();
     private final FilterFunction blueFilter = new BlueFilter();
+    private final FilterFunction justRedFilter = new JustRedFilter();
+    private final FilterFunction justGreenFilter = new JustGreenFilter();
+    private final FilterFunction justBlueFilter = new JustBlueFilter();
+    private final FilterFunction almostRedFilter = new AlmostColorFilter(Color.RED);
+    private final FilterFunction almostGreenFilter = new AlmostColorFilter(Color.GREEN);
+    private final FilterFunction almostBlueFilter = new AlmostColorFilter(Color.BLUE);
     private final FilterFunction grayFilter = new GrayFilter();
+    private final List<MarvinImage> processedImages = new ArrayList<>();
+    private MarvinImage finalMap;
+    private MarvinSegment[] mapSegments;
     private Filters filters;
-
-    public void processMap() {
-        MarvinImage imageOriginal = MarvinImageIO.loadImage(imagePath);
-
-        final List<MarvinImage> imageResults = new ArrayList<>();
-        MarvinImage image = imageOriginal.clone();
-        imageResults.add(processObjects(image));
-
-        createFilters(imageOriginal);
-        imageResults.add(processObjects(filters.getRed().image));
-        imageResults.add(processObjects(filters.getGreen().image));
-        imageResults.add(processObjects(filters.getBlue().image));
-        imageResults.add(processObjects(filters.getGray().image));
-
-        BackgroundRemover backgroundRemover = new BackgroundRemover(imageOriginal);
-        image = backgroundRemover.removeBackground();
-        imageResults.add(processObjects(image));
-
-        image = mergePhotos(imageResults);
-
-        //Use Floodfill segmention to get image segments
-        /*mapSegments = floodfillSegmentation(image);
-        for (MarvinSegment seg : mapSegments) {
-            image.drawRect(seg.x1, seg.y1, seg.width, seg.height, Color.yellow);
-        }*/
-        processedMap = image;
-    }
 
     public MapProcessor(String imagePath) {
         this.imagePath = imagePath;
     }
 
-    public MarvinImage getProcessedMap() {
-        return processedMap;
+    public List<MarvinImage> getProcessedImages() {
+        return processedImages;
+    }
+
+    public MarvinImage getFinalMap() {
+        return finalMap;
     }
 
     public MarvinSegment[] getMapSegments() {
@@ -64,6 +47,39 @@ public class MapProcessor {
 
     public Filters getFilters() {
         return filters;
+    }
+
+
+    public void processMap() {
+        MarvinImage imageOriginal = MarvinImageIO.loadImage(imagePath);
+
+        MarvinImage image = imageOriginal.clone();
+        processedImages.add(processObjects(image));
+
+        createFilters(imageOriginal);
+        processedImages.add(processObjects(filters.getRed().image));
+        processedImages.add(processObjects(filters.getGreen().image));
+        processedImages.add(processObjects(filters.getBlue().image));
+        processedImages.add(processObjects(filters.getJustRed().image));
+        processedImages.add(processObjects(filters.getJustGreen().image));
+        processedImages.add(processObjects(filters.getJustBlue().image));
+        processedImages.add(processObjects(filters.getAlmostRed().image));
+        processedImages.add(processObjects(filters.getAlmostGreen().image));
+        processedImages.add(processObjects(filters.getAlmostBlue().image));
+        processedImages.add(processObjects(filters.getGray().image));
+
+        BackgroundRemover backgroundRemover = new BackgroundRemover(imageOriginal);
+        image = backgroundRemover.removeBackground();
+        processedImages.add(processObjects(image));
+
+        image = mergePhotos(processedImages);
+
+        //Use Floodfill segmention to get image segments
+        /*mapSegments = floodfillSegmentation(image);
+        for (MarvinSegment seg : mapSegments) {
+            image.drawRect(seg.x1, seg.y1, seg.width, seg.height, Color.yellow);
+        }*/
+        finalMap = image;
     }
 
 
@@ -101,6 +117,48 @@ public class MapProcessor {
                     filters.getBlue().image.setBinaryColor(x, y, false);
                 }
 
+                if (justRedFilter.filter(r, g, b)) {
+                    filters.getJustRed().image.setBinaryColor(x, y, true);
+                    filters.getJustRed().activePixelCount++;
+                } else {
+                    filters.getJustRed().image.setBinaryColor(x, y, false);
+                }
+
+                if (justGreenFilter.filter(r, g, b)) {
+                    filters.getJustGreen().image.setBinaryColor(x, y, true);
+                    filters.getJustGreen().activePixelCount++;
+                } else {
+                    filters.getJustGreen().image.setBinaryColor(x, y, false);
+                }
+
+                if (justBlueFilter.filter(r, g, b)) {
+                    filters.getJustBlue().image.setBinaryColor(x, y, true);
+                    filters.getJustBlue().activePixelCount++;
+                } else {
+                    filters.getJustBlue().image.setBinaryColor(x, y, false);
+                }
+
+                if (almostRedFilter.filter(r, g, b)) {
+                    filters.getAlmostRed().image.setBinaryColor(x, y, true);
+                    filters.getAlmostRed().activePixelCount++;
+                } else {
+                    filters.getAlmostRed().image.setBinaryColor(x, y, false);
+                }
+
+                if (almostGreenFilter.filter(r, g, b)) {
+                    filters.getAlmostGreen().image.setBinaryColor(x, y, true);
+                    filters.getAlmostGreen().activePixelCount++;
+                } else {
+                    filters.getAlmostGreen().image.setBinaryColor(x, y, false);
+                }
+
+                if (almostBlueFilter.filter(r, g, b)) {
+                    filters.getAlmostBlue().image.setBinaryColor(x, y, true);
+                    filters.getAlmostBlue().activePixelCount++;
+                } else {
+                    filters.getAlmostBlue().image.setBinaryColor(x, y, false);
+                }
+
                 if (grayFilter.filter(r, g, b)) {
                     filters.getGray().image.setBinaryColor(x, y, true);
                     filters.getGray().activePixelCount++;
@@ -118,7 +176,7 @@ public class MapProcessor {
             binary = image;
         else {
             //Use threshold to separate foreground and background.
-            binary = MarvinColorModelConverter.rgbToBinary(image, Constants.BINARY_MID_THRESHOLD);
+            binary = MarvinColorModelConverter.rgbToBinary(image, Constants.BYTE_MID);
         }
 
         boolean invertNeeded = invertNeeded(binary);
@@ -163,7 +221,7 @@ public class MapProcessor {
                 throw new IllegalArgumentException("All the passed images should have the same size.");
         }
 
-        MarvinImage result = new MarvinImage(width, height);
+        MarvinImage result = new MarvinImage(width, height, MarvinImage.COLOR_MODEL_BINARY);
         Color c;
         boolean containsObject;
         for (int y = 0; y < height; y++) {
@@ -175,15 +233,15 @@ public class MapProcessor {
                             img.getIntComponent1(x, y),
                             img.getIntComponent2(x, y)
                     );
-                    if (convertToGray(c) <= Constants.BINARY_MID_THRESHOLD) {
+                    if (convertToGray(c) <= Constants.BYTE_MID) {
                         containsObject = true;
                     }
                 }
                 // if the pixel in any of the images, contains an object, set it to black in final image.
                 if (containsObject)
-                    result.setIntColor(x, y, Constants.BYTE_MAX, Constants.BYTE_MIN, Constants.BYTE_MIN, Constants.BYTE_MIN);
+                    result.setBinaryColor(x, y, true);
                 else
-                    result.setIntColor(x, y, Constants.BYTE_MAX, Constants.BYTE_MAX, Constants.BYTE_MAX, Constants.BYTE_MAX);
+                    result.setBinaryColor(x, y, false);
             }
         }
         return result;

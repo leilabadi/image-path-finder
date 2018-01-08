@@ -50,11 +50,11 @@ public class PathFinderBuilder {
 
         MapProcessor mapProcessor = new MapProcessor(imagePath);
         mapProcessor.processMap();
-        final MarvinImage map = mapProcessor.getProcessedMap();
+        final MarvinImage map = mapProcessor.getFinalMap();
 
         Size size = new Size(map.getHeight(), map.getWidth());
 
-        MarvinImage binary = MarvinColorModelConverter.rgbToBinary(map, Constants.BINARY_MID_THRESHOLD);
+        MarvinImage binary = MarvinColorModelConverter.rgbToBinary(map, Constants.BYTE_MID);
 
         Cell[][] cells = new Cell[size.getRowCount()][size.getColumnCount()];
         for (int y = 0; y < size.getRowCount(); y++) {
@@ -63,7 +63,7 @@ public class PathFinderBuilder {
             }
         }
 
-        //TODO: find start and goal and decrease resulation when converting to ui grid
+        //TODO: find start and goal and decrease resolution when converting to ui grid
 
         Location startLocation = new Location(1, 1);
         Location goalLocation = new Location(2, 2);

@@ -4,14 +4,14 @@ import fun.leilabadi.pathfinder.imageprocessing.Constants;
 
 import java.awt.*;
 
-public class BlueFilter extends FilterFunction {
+public class JustRedFilter extends FilterFunction {
 
-    public BlueFilter() {
-        super(Color.BLUE);
+    public JustRedFilter() {
+        super(Color.RED);
     }
 
     @Override
     public boolean filter(int r, int g, int b) {
-        return (b >= r * Constants.FILTER_SELECT_RATIO && b >= g * Constants.FILTER_SELECT_RATIO);
+        return r >= Constants.BYTE_MID;
     }
 }

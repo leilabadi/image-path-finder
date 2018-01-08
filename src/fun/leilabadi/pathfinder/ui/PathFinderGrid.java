@@ -21,10 +21,10 @@ public class PathFinderGrid extends JComponent {
     private final static Color CELL_GRADIENT_COLOR1 = new Color(200, 200, 200);
     private final static Color CELL_GRADIENT_COLOR2 = new Color(223, 223, 223);
     private final static Color CELL_SELECTED_COLOR = new Color(128, 128, 128);
-    private final static Color CELL_START_COLOR = new Color(0, 0, 0);
+    private final static Color CELL_START_COLOR = new Color(0, 0, 255);
     private final static Color CELL_GOAL_COLOR = new Color(255, 0, 0);
-    private final static Color CELL_VISITED_COLOR = new Color(255, 249, 111);
-    private final static Color CELL_EXPLORED_COLOR = new Color(255, 152, 35);
+    private final static Color CELL_VISITED_COLOR = new Color(255, 250, 111);
+    private final static Color CELL_EXPLORED_COLOR = new Color(255, 150, 50);
     private final static Color CELL_PATH_COLOR = new Color(0, 255, 0);
     private final InteractiveGrid grid;
     private InteractiveGridCell dragTargetCell;
