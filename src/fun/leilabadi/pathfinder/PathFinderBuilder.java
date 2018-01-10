@@ -80,6 +80,7 @@ public class PathFinderBuilder {
         Location startLocation = new Location(startSegment.y1, startSegment.x1);
         Location goalLocation = new Location(goalSegment.y1, goalSegment.x1);
         //TODO: decrease resolution when converting to ui grid
+        //TODO: seprate interactive grid from image map to improve performance
         return new HeuristicPathFinder(size, startLocation, goalLocation, cells);
     }
 
