@@ -1,9 +1,9 @@
 package fun.leilabadi.pathfinder.ui;
 
-import fun.leilabadi.pathfinder.Map;
 import fun.leilabadi.pathfinder.PathFinder;
 import fun.leilabadi.pathfinder.State;
 import fun.leilabadi.pathfinder.common.Size;
+import fun.leilabadi.pathfinder.map.PathFinderMap;
 import fun.leilabadi.pathfinder.ui.components.InteractiveGrid;
 import fun.leilabadi.pathfinder.ui.components.InteractiveGridImpl;
 
@@ -20,7 +20,7 @@ public class PathFinderFrame extends JFrame {
     public PathFinderFrame(PathFinder pathFinder) {
         super("Path Finder");
 
-        Map map = pathFinder.getMap();
+        PathFinderMap map = pathFinder.getMap();
         Size size = map.getSize();
 
         int[][] data = new int[size.getRowCount()][size.getColumnCount()];

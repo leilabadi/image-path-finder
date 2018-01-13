@@ -13,5 +13,5 @@ public class UiConfigs {
     public final static Color CELL_VISITED_COLOR = new Color(255, 250, 111);
     public final static Color CELL_EXPLORED_COLOR = new Color(255, 150, 50);
     public final static Color CELL_PATH_COLOR = new Color(0, 255, 0);
-    public final static  int CELL_SIZE = 15;
+    public final static int CELL_SIZE = 15;
 }

@@ -1,5 +1,7 @@
-package fun.leilabadi.pathfinder;
+package fun.leilabadi.pathfinder.map;
 
+import fun.leilabadi.pathfinder.Cell;
+import fun.leilabadi.pathfinder.CellType;
 import fun.leilabadi.pathfinder.common.Location;
 import fun.leilabadi.pathfinder.common.Size;
 import fun.leilabadi.pathfinder.imageprocessing.MapProcessor;
@@ -11,47 +13,17 @@ import java.util.ArrayList;
 
 import static marvin.MarvinPluginCollection.floodfillSegmentation;
 
-public class PathFinderBuilder {
+public class ImageMapBuilder extends MapBuilder {
+    private final String imagePath;
+    private final String directoryPath;
 
-    public PathFinder build(String[] mapLines) {
-        int index = 0;
-        while (mapLines[index].startsWith("#")) {
-            index++;
-        }
-
-        String[] tempArray;
-        tempArray = mapLines[index++].split(" ");
-        int pacmanRow = Integer.parseInt(tempArray[0]);
-        int pacmanColumn = Integer.parseInt(tempArray[1]);
-
-        tempArray = mapLines[index++].split(" ");
-        int foodRow = Integer.parseInt(tempArray[0]);
-        int foodColumn = Integer.parseInt(tempArray[1]);
-
-        tempArray = mapLines[index++].split(" ");
-        int rowCount = Integer.parseInt(tempArray[0]);
-        int columnCount = Integer.parseInt(tempArray[1]);
-        Size size = new Size(rowCount, columnCount);
-
-        String gridRows[] = new String[rowCount];
-        for (int row = 0; row < rowCount; row++) {
-            gridRows[row] = mapLines[index++];
-        }
-
-        Cell[][] cells = new Cell[rowCount][columnCount];
-        for (int row = 0; row < rowCount; row++) {
-            for (int column = 0; column < columnCount; column++) {
-                cells[row][column] = new Cell(CellType.fromSymbol(gridRows[row].charAt(column)));
-            }
-        }
-
-        Location startLocation = new Location(pacmanRow, pacmanColumn);
-        Location goalLocation = new Location(foodRow, foodColumn);
-        return new HeuristicPathFinder(size, startLocation, goalLocation, cells);
+    public ImageMapBuilder(String imagePath, String directoryPath) {
+        this.imagePath = imagePath;
+        this.directoryPath = directoryPath;
     }
 
-    public PathFinder build(String imagePath, String directoryPath) {
-
+    @Override
+    public void build() {
         MapProcessor mapProcessor = new MapProcessor(imagePath);
         mapProcessor.processMap();
         final MarvinImage map = mapProcessor.getFinalMap();
@@ -80,8 +52,7 @@ public class PathFinderBuilder {
         Location startLocation = new Location(startSegment.y1, startSegment.x1);
         Location goalLocation = new Location(goalSegment.y1, goalSegment.x1);
         //TODO: decrease resolution when converting to ui grid
-        //TODO: seprate interactive grid from image map to improve performance
-        return new HeuristicPathFinder(size, startLocation, goalLocation, cells);
+        this.map = new GridMap(size, startLocation, goalLocation, cells);
     }
 
     private MarvinSegment getTargetSegment(MarvinImage map, MarvinSegment[] segments) {

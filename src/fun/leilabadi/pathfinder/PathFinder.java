@@ -1,11 +1,12 @@
 package fun.leilabadi.pathfinder;
 
-import java.awt.event.ActionListener;
+import fun.leilabadi.pathfinder.map.PathFinderMap;
+
 import java.util.List;
 
 public interface PathFinder {
 
-    Map getMap();
+    PathFinderMap getMap();
 
     List<State> getVisitedNodes();
 

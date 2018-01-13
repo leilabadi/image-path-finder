@@ -1,26 +1,26 @@
 package fun.leilabadi.pathfinder;
 
 import fun.leilabadi.pathfinder.common.Location;
-import fun.leilabadi.pathfinder.common.Size;
+import fun.leilabadi.pathfinder.map.PathFinderMap;
 
 import java.util.*;
 
 public class HeuristicPathFinder implements PathFinder {
-    private final Map map;
+    private final PathFinderMap map;
     private final State initialState;
     private final List<State> visitedNodes = new ArrayList<>();
     private final List<State> exploredNodes = new ArrayList<>();
     private final HeuristicFunction h;
     private FindProgressListener findProgressListener;
 
-    HeuristicPathFinder(Size gridSize, Location startLocation, Location goalLocation, Cell[][] cells) {
-        this.map = new Map(gridSize, startLocation, goalLocation, cells);
+    public HeuristicPathFinder(PathFinderMap map) {
+        this.map = map;
         this.h = new GridDistanceHeuristicFunction();
-        this.initialState = new State(startLocation, null, 0, h);
+        this.initialState = new State(map.getStartLocation(), null, 0, h);
     }
 
     @Override
-    public Map getMap() {
+    public PathFinderMap getMap() {
         return map;
     }
 

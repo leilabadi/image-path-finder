@@ -13,6 +13,6 @@ public abstract class FilterFunction {
         return filter(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    //TODO: find a way to filter based on any color
+    //TODO: find a general way to filter based on any color
     public abstract boolean filter(int r, int g, int b);
 }
