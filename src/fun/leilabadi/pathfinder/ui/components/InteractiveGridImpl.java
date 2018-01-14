@@ -2,7 +2,9 @@ package fun.leilabadi.pathfinder.ui.components;
 
 import fun.leilabadi.pathfinder.common.Matrix;
 import fun.leilabadi.pathfinder.common.MatrixElement;
-import fun.leilabadi.pathfinder.ui.UiConfigs;
+import fun.leilabadi.pathfinder.common.UiMode;
+import fun.leilabadi.pathfinder.config.UiConfigs;
+import fun.leilabadi.pathfinder.ui.CellProgress;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,14 +22,27 @@ public class InteractiveGridImpl extends JComponent implements InteractiveGrid {
     private BufferedImage buffer;
     private int activationState = 1;//TODO: change this based on obstacle, start or goal button in UI
     private MatrixElement dragTargetCell;
+    private UiMode uiMode;
 
-    public InteractiveGridImpl(int rowCount, int columnCount) {
+    public InteractiveGridImpl(int rowCount, int columnCount, UiMode uiMode) {
+        this.uiMode = uiMode;
         this.matrix = new Matrix(rowCount, columnCount);
         this.cellLocations = new Point2D.Double[rowCount][columnCount];
         init();
         registerListeners();
 
-        this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                buffer = null;
+                init();
+            }
+        });
+    }
+
+    @Override
+    public void setActivationState(int activationState) {
+        this.activationState = activationState;
     }
 
     private void init() {
@@ -42,57 +57,52 @@ public class InteractiveGridImpl extends JComponent implements InteractiveGrid {
     }
 
     private void registerListeners() {
+        if (uiMode == UiMode.EDIT) {
 
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-            }
+            this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-                MatrixElement cell = getPassingCell(e.getPoint());
-                if (cell != null) {
-                    dragTargetCell = cell;
-                    dragTargetCell.setState(activationState);
-                    repaint();
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
                 }
-            }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                dragTargetCell = null;
-            }
-        });
-
-        addMouseMotionListener(new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                MatrixElement cell = getPassingCell(e.getPoint());
-                if ((cell != null) && (cell != dragTargetCell)) {
-                    dragTargetCell = cell;
-                    dragTargetCell.setState(activationState);
-                    repaint();
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    MatrixElement cell = getPassingCell(e.getPoint());
+                    if (cell != null) {
+                        dragTargetCell = cell;
+                        dragTargetCell.setState(activationState);
+                        repaint();
+                    }
                 }
-            }
 
-            @Override
-            public void mouseMoved(MouseEvent e) {
-            }
-        });
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    dragTargetCell = null;
+                }
+            });
 
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+            addMouseMotionListener(new MouseMotionListener() {
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    MatrixElement cell = getPassingCell(e.getPoint());
+                    if ((cell != null) && (cell != dragTargetCell)) {
+                        dragTargetCell = cell;
+                        dragTargetCell.setState(activationState);
+                        repaint();
+                    }
+                }
 
-            //int key = e.getKeyCode();
-            return false;
-        });
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                }
+            });
 
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                buffer = null;
-                init();
-            }
-        });
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+                //int key = e.getKeyCode();
+                return false;
+            });
+        }
     }
 
     private void setGraphicDefaults(Graphics2D g) {
@@ -142,6 +152,7 @@ public class InteractiveGridImpl extends JComponent implements InteractiveGrid {
     //TODO: separate the interactivity logic from map display and update logic
     protected Paint getPaint(int state, Point2D.Double cellStart, Point2D.Double cellEnd) {
         Paint paint;
+
         switch (state) {
             case 0:
                 paint = UiConfigs.DEFAULT_COLOR;
@@ -158,17 +169,14 @@ public class InteractiveGridImpl extends JComponent implements InteractiveGrid {
             case 4:
                 paint = UiConfigs.CELL_GOAL_COLOR;
                 break;
-            case 5:
-                paint = UiConfigs.CELL_VISITED_COLOR;
-                break;
-            case 6:
-                paint = UiConfigs.CELL_EXPLORED_COLOR;
-                break;
-            case 7:
-                paint = UiConfigs.CELL_PATH_COLOR;
-                break;
             default:
-                throw new IllegalArgumentException("Invalid value for the state");
+                if (state == CellProgress.VISITED.getValue())
+                    paint = UiConfigs.CELL_VISITED_COLOR;
+                else if (state == CellProgress.EXPLORED.getValue())
+                    paint = UiConfigs.CELL_EXPLORED_COLOR;
+                else if (state == CellProgress.PATH.getValue())
+                    paint = UiConfigs.CELL_PATH_COLOR;
+                else throw new IllegalArgumentException("Invalid value for the state");
         }
         return paint;
     }

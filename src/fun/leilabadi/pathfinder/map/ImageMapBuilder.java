@@ -15,7 +15,7 @@ import static marvin.MarvinPluginCollection.floodfillSegmentation;
 
 public class ImageMapBuilder extends MapBuilder {
     private final String imagePath;
-    private final String directoryPath;
+    private final String directoryPath;//will be used when saving images
 
     public ImageMapBuilder(String imagePath, String directoryPath) {
         this.imagePath = imagePath;

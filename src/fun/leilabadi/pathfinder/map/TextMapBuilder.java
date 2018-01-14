@@ -6,7 +6,7 @@ import fun.leilabadi.pathfinder.common.Location;
 import fun.leilabadi.pathfinder.common.Size;
 
 public class TextMapBuilder extends MapBuilder {
-    private String[] data;
+    private final String[] data;
 
     public TextMapBuilder(String[] data) {
         this.data = data;

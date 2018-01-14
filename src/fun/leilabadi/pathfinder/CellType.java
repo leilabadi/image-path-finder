@@ -11,6 +11,27 @@ public enum CellType {
         this.symbol = symbol;
     }
 
+    public static CellType fromValue(byte value) {
+        CellType result;
+        switch (value) {
+            case 1:
+                result = EMPTY;
+                break;
+            case 2:
+                result = OBSTACLE;
+                break;
+            case 3:
+                result = START;
+                break;
+            case 4:
+                result = GOAL;
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        return result;
+    }
+
     public static CellType fromSymbol(char symbol) {
         CellType result;
         switch (symbol) {
